@@ -35,8 +35,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          echo ${{ needs.check.outputs.current }}
-          echo ${{ needs.check.outputs.latest }}
           if [[ ${{ needs.check.outputs.latest }} > ${{ needs.check.outputs.current }} ]];
           then
             echo "Update available for ${REPO}";
@@ -49,6 +47,8 @@ jobs:
           gh issue create --title "Update ${REPO}" --body "See https://github.com/${REPO}/releases/latest" --assignee "paulstakem"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v3
-        with:
-          ref: github_actions/update_release
+      - name: create branch
+        run: |
+          git checkout -b update/${LATEST}
+        env:
+          LATEST=$(curl --silent "https://api.github.com/repos/${REPO}/releases/latest" | jq -r .tag_name)
