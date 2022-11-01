@@ -49,6 +49,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create branch
         run: |
-          git checkout -b update/${LATEST}
-        env:
-          LATEST=$(curl --silent "https://api.github.com/repos/${REPO}/releases/latest" | jq -r .tag_name)
+          git checkout -b update/${{ needs.check.outputs.latest }}
