@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get Current Release
+        id: current
+        run: |
+          cat get.sh| grep -e '^RUNNER_VERSION' | awk -F  '=' '{print $(NF)}' | tr -d \"
+
+      - name: Get result
+        run: echo "${{steps.current.outputs.result}}"
+          
