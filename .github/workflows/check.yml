@@ -26,4 +26,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: check
     steps:
-    - run: echo ${{needs.check.outputs.current}} ${{needs.check.outputs.latest}}
+    - run: |
+        echo ${{needs.check.outputs.current}}
+        echo ${{needs.check.outputs.latest}}
+        if [[ ${{needs.check.outputs.latest}} > ${{needs.check.outputs.current}} ]];
+        then
+          echo "Update available for action/runner...";
+        else
+          echo "No update required";
+        fi;
