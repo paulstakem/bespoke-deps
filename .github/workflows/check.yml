@@ -8,30 +8,41 @@ on:
 
   workflow_dispatch:
 
+env:
+  REPO: "actions/runner"
+
 jobs:
   check:
     runs-on: ubuntu-latest
     outputs:
-      current: ${{ steps.current.outputs.version }}
-      latest: ${{ steps.latest.outputs.version }}
+      current: ${{ steps.current.outputs.RUNNER_VERSION }}
+      latest: ${{ steps.latest.outputs.RUNNER_VERSION }}
     steps:
       - uses: actions/checkout@v3
       - name: Get Current Release
         id: current
-        run: echo "version=1.2.3" >> $GITHUB_OUTPUT
+        run: |
+          grep '^RUNNER_VERSION' get.sh | awk -F '=' '{print $(NF)}' | tr -d '"' >> $GITHUB_OUTPUT
       - name: Get Latest Release
         id: latest
-        run: echo "version=1.2.5" >> $GITHUB_OUTPUT
+        run:
+          curl -s "https://api.github.com/repos/${REPO}/releases/latest" | jq -r .tag_name) >> $GITHUB_OUTPUT
   confirm:
     runs-on: ubuntu-latest
     needs: check
     steps:
     - run: |
-        echo ${{needs.check.outputs.current}}
-        echo ${{needs.check.outputs.latest}}
-        if [[ ${{needs.check.outputs.latest}} > ${{needs.check.outputs.current}} ]];
+        echo ${{ needs.check.outputs.current }}"
+        echo ${{ needs.check.outputs.latest }}
+        if [[ ${{ needs.check.outputs.latest }} > ${{ needs.check.outputs.current }} ]];
         then
-          echo "Update available for action/runner...";
+          echo "Update available for ${REPO}";
         else
-          echo "No update required";
+          echo "No update required for ${REPO}";
+          exit 1
         fi;
+    - name: create issue request
+      run: |
+        gh issue create --title "Update ${REPO}" --body "See https://github.com/${REPO}/releases/latest" --assignee "@paulstakem"
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
