@@ -46,6 +46,6 @@ jobs:
           fi;
       - name: create issue request
         run: |
-          gh issue create --title "Update ${REPO}" --body "See https://github.com/${REPO}/releases/latest" --assignee "@paulstakem"
+          gh issue create --title "Update ${REPO}" --body "See https://github.com/${REPO}/releases/latest" --assignee "paulstakem"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
