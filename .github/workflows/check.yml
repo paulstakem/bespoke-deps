@@ -34,7 +34,7 @@ jobs:
     needs: check
     steps:
     - run: |
-        echo ${{ needs.check.outputs.current }}"
+        echo ${{ needs.check.outputs.current }}
         echo ${{ needs.check.outputs.latest }}
         if [[ ${{ needs.check.outputs.latest }} > ${{ needs.check.outputs.current }} ]];
         then
