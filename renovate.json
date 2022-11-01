@@ -1,0 +1,9 @@
+{
+  "regexManagers": [
+    {
+      "fileMatch": ["^.*\\.sh"],
+      "matchStrings": ["version=(?<currentValue>.*?) # renovate: depName=(?<depName>.*?)\\n"],
+      "datasourceTemplate": "github-releases"
+    }
+  ]
+}
