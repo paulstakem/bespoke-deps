@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: check
     steps:
+      - uses: actions/checkout@v3
       - run: |
           echo ${{ needs.check.outputs.current }}
           echo ${{ needs.check.outputs.latest }}
